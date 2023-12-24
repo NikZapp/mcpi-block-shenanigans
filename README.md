@@ -18,7 +18,7 @@ A mod that improves the visuals of MCPI Reborn by modifying how blocks look, wit
 ## Stars
 * If you place a fire block with a nonzero id, it renders as a star.
 * The star uses the redstone texture from `terrain.png`, overwrite it if you want the clean shape in the screenshot.
-* The mod does not include the star generation code! Use [this] python script to do so.
+* The mod does not include the star generation code! Use [this](https://github.com/NikZapp/mcpi-stars-generator) python script to do so.
 
 ![Stars][stars]
 
