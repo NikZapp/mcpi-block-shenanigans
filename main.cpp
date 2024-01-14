@@ -27,7 +27,7 @@ bool TileRenderer_tesselateInWorld_injection(uchar *tile_renderer, uchar *tile, 
     int shape = Tile_getRenderShape(tile);
     int data = Level_getData(level, x, y, z);
 
-    srand(x * z + y);
+    srand(x * z + y * x + y);
     float uv_size = 1.0 / 16.0;
 
     switch (shape) {
@@ -145,6 +145,7 @@ bool TileRenderer_tesselateInWorld_injection(uchar *tile_renderer, uchar *tile, 
             float uv_x1 = uv_x0 + uv_size;
             float uv_y1 = uv_y0 + uv_size;
             Tesselator_color(Tesselator_instance, 160, 255, 70, 255);
+
             for (int i = 0; i < 3; i++) {
                 float h1 = (rand() % 0xf) / 16.0;
                 float h2 = (rand() % 0xf) / 16.0;
@@ -173,7 +174,6 @@ bool TileRenderer_tesselateInWorld_injection(uchar *tile_renderer, uchar *tile, 
                 }
             }
         }
-
         return TileRenderer_tesselateInWorld(tile_renderer, tile, x, y, z);
     }
     case 6: {
@@ -228,9 +228,21 @@ int FireTile_getRenderLayer_injection(uchar *tile) {
     return 1;
 }
 
+
+static void add_star_item(unsigned char *filling_container) {
+    ItemInstance *star_instance = new ItemInstance;
+    ALLOC_CHECK(star_instance);
+    star_instance->count = 255;
+    star_instance->auxiliary = 1;
+    star_instance->id = 51;
+    (*FillingContainer_addItem)(filling_container, star_instance);
+}
+
+
 __attribute__((constructor)) static void init() {
     overwrite_calls((void *)TileRenderer_tesselateInWorld, (void *)TileRenderer_tesselateInWorld_injection);
     // FireTile vtable addr of Tile_getRenderLayer
     patch_address((void *)0x11493c, (void *)FireTile_getRenderLayer_injection);
     misc_run_on_update(mcpi_callback);
+    misc_run_on_creative_inventory_setup(add_star_item);
 }
